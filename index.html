@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BLOG DO LUQUINHAS - Plataforma Avançada de Matemática</title>
+  
+  <!-- FONTES -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ELEMENTOS DE BACKGROUND -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="glow-orb orb-3"></div>
+  <div class="math-grid-overlay"></div>
+  <div id="math-particles"></div>
+
+  <!-- PÁGINA 1: LOGIN / AUTH -->
+  <div id="page-login" class="page active">
+    <div class="login-wrapper">
+      <div class="login-card glass-panel">
+        <div class="brand-header">
+          <div class="brand-logo-glow">∑</div>
+          <div>
+            <h1 class="brand-name">BLOG DO <span>LUQUINHAS</span></h1>
+            <p class="brand-tagline">Portal de Aprendizado Matemático</p>
+          </div>
+        </div>
+
+        <div id="login-alert" class="login-alert"></div>
+
+        <!-- ETAPA 1: Seleção de Perfil -->
+        <div id="step-role" class="login-step active">
+          <h2 class="step-heading">Selecione seu portal de acesso:</h2>
+          <div class="portal-grid">
+            <button class="portal-card" onclick="selectRole('student')">
+              <div class="portal-icon student-avatar">∫</div>
+              <div class="portal-details">
+                <h3>Portal do Estudante</h3>
+                <p>Acesse suas tarefas, dicas e fórmulas</p>
+              </div>
+              <span class="portal-arrow">→</span>
+            </button>
+            <button class="portal-card" onclick="selectRole('teacher')">
+              <div class="portal-icon teacher-avatar">π</div>
+              <div class="portal-details">
+                <h3>Portal do Professor</h3>
+                <p>Gerencie turmas, tarefas e materiais</p>
+              </div>
+              <span class="portal-arrow">→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ETAPA 2A: Seleção de Turma (Aluno) -->
+        <div id="step-class" class="login-step">
+          <button class="btn-back" onclick="goToStep('step-role')">← Voltar</button>
+          <h2 class="step-heading">Selecione sua Turma:</h2>
+          <div class="class-selector-list">
+            <button class="class-card c-1" onclick="selectClass('1° Ano')">
+              <div class="class-num">1°</div>
+              <div class="class-info">
+                <h4>1° Ano - Ensino Médio</h4>
+                <span>Funções, Álgebra & Trigonometria</span>
+              </div>
+              <div class="pulse-dot"></div>
+            </button>
+            <button class="class-card c-2" onclick="selectClass('2° Ano')">
+              <div class="class-num">2°</div>
+              <div class="class-info">
+                <h4>2° Ano - Ensino Médio</h4>
+                <span>Geometria Espacial & Matrizes</span>
+              </div>
+              <div class="pulse-dot"></div>
+            </button>
+            <button class="class-card c-3" onclick="selectClass('3° Ano')">
+              <div class="class-num">3°</div>
+              <div class="class-info">
+                <h4>3° Ano - Ensino Médio</h4>
+                <span>Análise Combinatória & Estatística</span>
+              </div>
+              <div class="pulse-dot"></div>
+            </button>
+          </div>
+        </div>
+
+        <!-- ETAPA 2B: Auth de Professor -->
+        <div id="step-teacher-auth" class="login-step">
+          <button class="btn-back" onclick="goToStep('step-role')">← Voltar</button>
+          <h2 class="step-heading">Acesso Do Professor:</h2>
+          <form id="teacher-form" onsubmit="handleTeacherLogin(event)">
+            <div class="input-field">
+              <label>Código do Docente</label>
+              <input type="text" id="teacher-id" placeholder="Ex: PROF-2026" required>
+            </div>
+            <div class="input-field">
+              <label>Chave de Acesso Protegida</label>
+              <div class="masked-input-wrap">
+                <input type="password" id="teacher-pass" class="encrypted-input" placeholder="••••••••" required>
+                <button type="button" class="toggle-mask-btn" onclick="togglePasswordMask('teacher-pass', this)">👁️</button>
+              </div>
+            </div>
+            <button type="submit" class="btn-hero">Acessar Painel Do Professor</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PÁGINA 2: DASHBOARD / APLICAÇÃO -->
+  <div id="page-app" class="page">
+    <nav class="navbar glass-panel">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <div class="brand-logo-glow sm">∑</div>
+          <h1 class="brand-title">BLOG DO <span>LUQUINHA</span></h1>
+          <span id="user-status-chip" class="status-chip">Estudante</span>
+        </div>
+
+        <div class="nav-links">
+          <button class="nav-item active" onclick="switchSection('dashboard')">🏠 Inicio</button>
+          <button class="nav-item" onclick="switchSection('tasks')">📋 Tarefas</button>
+          <button class="nav-item" onclick="switchSection('videos')">🎬 Vídeos</button>
+          <button class="nav-item" onclick="switchSection('tips')">💡 Dicas & Fórmulas</button>
+          <button class="nav-item" onclick="switchSection('channel')">📢 Recados</button>
+        </div>
+
+        <div class="nav-controls">
+          <button class="theme-btn" onclick="toggleTheme()" title="Alternar Tema">🌙</button>
+          <button class="logout-btn" onclick="logout()">Sair 🚪</button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="app-body">
+      <!-- SEÇÃO 1: DASHBOARD -->
+      <section id="sec-dashboard" class="section active">
+        <div class="dashboard-hero glass-panel">
+          <div class="hero-text-content">
+            <span class="hero-tag">BEM-VINDO AO FUTURO</span>
+            <h2 id="welcome-title">Painel do Professor</h2>
+            <p>Acompanhe seu progresso e mantenha suas atividades matemáticas em dia.</p>
+          </div>
+          <div class="hero-graphic">
+            <span class="math-symbol-floating">√</span>
+            <span class="math-symbol-floating s2">∞</span>
+          </div>
+        </div>
+
+        <div class="bento-grid">
+          <div class="bento-card">
+            <div class="bento-head">
+              <span class="bento-lbl">Tarefas Pendentes</span>
+              <span class="bento-icon">📌</span>
+            </div>
+            <div class="bento-val" id="count-pending">0</div>
+          </div>
+          <div class="bento-card">
+            <div class="bento-head">
+              <span class="bento-lbl">Concluídas</span>
+              <span class="bento-icon">✅</span>
+            </div>
+            <div class="bento-val" id="count-completed">0</div>
+          </div>
+          <div class="bento-card">
+            <div class="bento-head">
+              <span class="bento-lbl">Dicas Disponíveis</span>
+              <span class="bento-icon">💡</span>
+            </div>
+            <div class="bento-val" id="count-tips">0</div>
+          </div>
+        </div>
+
+        <div class="section-divider">
+          <h3>Próximas Entrega</h3>
+          <button class="view-all-btn" onclick="switchSection('tasks')">Ver todas →</button>
+        </div>
+        <div id="recent-tasks-container" class="tasks-grid"></div>
+      </section>
+
+      <!-- SEÇÃO 2: TAREFAS -->
+      <section id="sec-tasks" class="section">
+        <div class="section-toolbar">
+          <div>
+            <h2 class="title-accent">Gerenciador de Tarefas</h2>
+            <p class="subtitle">Filtre, consulte e resolva suas atividades</p>
+          </div>
+          <div class="search-bar-wrap">
+            <span class="search-ic">🔍</span>
+            <input type="text" id="task-search" placeholder="Buscar por título ou assunto..." oninput="renderTasks()">
+          </div>
+        </div>
+
+        <div class="filter-pills">
+          <button class="pill active" onclick="filterCategory('all', this)">Todas</button>
+          <button class="pill" onclick="filterCategory('Diária', this)">Diárias</button>
+          <button class="pill" onclick="filterCategory('Semanal', this)">Semanais</button>
+          <button class="pill" onclick="filterCategory('Mensal', this)">Mensais</button>
+          <button class="pill" onclick="filterCategory('Bimestral', this)">Bimestrais</button>
+        </div>
+
+        <div id="tasks-container" class="tasks-grid"></div>
+      </section>
+
+      <!-- SEÇÃO VÍDEOS -->
+      <section id="sec-videos" class="section">
+        <div class="section-toolbar">
+          <div>
+            <h2 class="title-accent">Aulas e Vídeo-Tutoriais</h2>
+            <p class="subtitle">Assista aos conteúdos audiovisuais postados pelo professor</p>
+          </div>
+        </div>
+        <div id="videos-container" class="tasks-grid"></div>
+      </section>
+
+      <!-- SEÇÃO 3: DICAS & FÓRMULAS -->
+      <section id="sec-tips" class="section">
+        <div class="section-toolbar">
+          <div>
+            <h2 class="title-accent">Biblioteca de Fórmulas e Dicas</h2>
+            <p class="subtitle">Apoio teórico para seus estudos de alta performance</p>
+          </div>
+        </div>
+        <div id="tips-container" class="tips-grid"></div>
+      </section>
+
+      <!-- SEÇÃO CANAL DE RECADOS -->
+      <section id="sec-channel" class="section">
+        <div class="section-toolbar">
+          <div>
+            <h2 class="title-accent">📢 Canal de Avisos & Comunicados</h2>
+            <p class="subtitle">Fique por dentro de todos os informes importantes do professor</p>
+          </div>
+          <button id="btn-add-announcement" class="btn-hero" style="width:auto;" onclick="openAnnouncementModal()">
+            + Novo Recado
+          </button>
+        </div>
+        <div id="announcements-container" class="announcements-list"></div>
+      </section>
+    </main>
+
+    <!-- BOTÃO FLUTUANTE DE AÇÃO (FAB) - PROFESSOR -->
+    <button id="fab-add" class="fab-btn" onclick="openCreateModal()">
+      <span class="fab-plus">+</span>
+    </button>
+
+    <!-- NAVEGAÇÃO MOBILE -->
+    <div class="mobile-nav">
+      <button class="mnav-item active" onclick="switchSection('dashboard')">
+        <span>🏠</span>
+        <span>Início</span>
+      </button>
+      <button class="mnav-item" onclick="switchSection('tasks')">
+        <span>📋</span>
+        <span>Tarefas</span>
+      </button>
+      <button class="mnav-item" onclick="switchSection('videos')">
+        <span>🎬</span>
+        <span>Vídeos</span>
+      </button>
+      <button class="mnav-item" onclick="switchSection('tips')">
+        <span>💡</span>
+        <span>Dicas</span>
+      </button>
+      <button class="mnav-item" onclick="switchSection('channel')">
+        <span>📢</span>
+        <span>Recados</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL DE CRIAÇÃO / EDIÇÃO (PROFESSOR) -->
+  <div id="modal-create" class="modal-overlay">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3 id="modal-title">Nova Atividade</h3>
+        <button class="close-btn" onclick="closeModal('modal-create')">&times;</button>
+      </div>
+      <form id="create-form" onsubmit="handleCreateSubmit(event)">
+        <input type="hidden" id="edit-item-id" value="">
+        
+        <div class="input-field" id="field-type-wrap">
+          <label>Tipo de Registro</label>
+          <select id="create-type" onchange="toggleModalFields()">
+            <option value="task">Tarefa / Atividade</option>
+            <option value="video">Vídeo Aula</option>
+            <option value="tip">Dica / Fórmula</option>
+          </select>
+        </div>
+
+        <div class="input-field">
+          <label>Título</label>
+          <input type="text" id="create-title" placeholder="Ex: Equações de 2° Grau" required>
+        </div>
+
+        <div id="field-class-selector" class="input-field">
+          <label>Turma Destino</label>
+          <select id="create-class">
+            <option value="1° Ano">1° Ano - Ensino Médio</option>
+            <option value="2° Ano">2° Ano - Ensino Médio</option>
+            <option value="3° Ano">3° Ano - Ensino Médio</option>
+            <option value="Todas">Todas as Turmas</option>
+          </select>
+        </div>
+
+        <div id="field-freq" class="input-row">
+          <div class="input-field" style="flex:1;">
+            <label>Frequência</label>
+            <select id="create-freq">
+              <option value="Diária">Diária</option>
+              <option value="Semanal">Semanal</option>
+              <option value="Mensal">Mensal</option>
+              <option value="Bimestral">Bimestral</option>
+            </select>
+          </div>
+          <div class="input-field" style="flex:1;">
+            <label>Data de Entrega</label>
+            <input type="date" id="create-date">
+          </div>
+        </div>
+
+        <div id="field-formula" class="input-field" style="display:none;">
+          <label>Fórmula LaTeX ou Texto</label>
+          <input type="text" id="create-formula" placeholder="Ex: ax² + bx + c = 0">
+        </div>
+
+        <div class="input-field">
+          <label>Descrição / Instruções</label>
+          <textarea id="create-desc" rows="3" placeholder="Descreva os detalhes..." required></textarea>
+        </div>
+
+        <div id="field-media-upload" class="input-field">
+          <label>Mídia (Foto / Vídeo / Documento)</label>
+          <div class="media-input-type">
+            <label><input type="radio" name="mediaSource" value="url" checked onclick="toggleMediaSource()"> URL do Link / Imagem / Vídeo</label>
+            <label><input type="radio" name="mediaSource" value="file" onclick="toggleMediaSource()"> Escolher do Computador</label>
+          </div>
+          
+          <div id="wrap-media-url">
+            <input type="url" id="create-link" placeholder="https://...">
+          </div>
+          <div id="wrap-media-file" style="display:none; margin-top:0.5rem;">
+            <input type="file" id="create-file" accept="image/*,video/*">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-sec" onclick="closeModal('modal-create')">Cancelar</button>
+          <button type="submit" class="btn-hero" style="width:auto; padding:0.8rem 1.5rem;">Salvar Registro</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL DE NOVO RECADO DO CANAL -->
+  <div id="modal-announcement" class="modal-overlay">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3>Novo Recado / Aviso</h3>
+        <button class="close-btn" onclick="closeModal('modal-announcement')">&times;</button>
+      </div>
+      <form id="announcement-form" onsubmit="handleAnnouncementSubmit(event)">
+        <div class="input-field">
+          <label>Turma Destino</label>
+          <select id="announcement-class">
+            <option value="1° Ano">1° Ano - Ensino Médio</option>
+            <option value="2° Ano">2° Ano - Ensino Médio</option>
+            <option value="3° Ano">3° Ano - Ensino Médio</option>
+            <option value="Todas">Todas as Turmas</option>
+          </select>
+        </div>
+
+        <div class="input-field">
+          <label>Mensagem do Recado</label>
+          <textarea id="announcement-content" rows="4" placeholder="Escreva o comunicado..." required></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-sec" onclick="closeModal('modal-announcement')">Cancelar</button>
+          <button type="submit" class="btn-hero" style="width:auto; padding:0.8rem 1.5rem;">Publicar Recado</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO -->
+  <div id="modal-delete" class="modal-overlay">
+    <div class="modal-card glass-panel sm-modal text-center">
+      <div class="danger-icon-wrap">⚠️</div>
+      <h3>Excluir Item?</h3>
+      <p style="color:var(--text-muted); margin-top:0.5rem; font-size:0.9rem;">Esta ação não poderá ser desfeita.</p>
+      <div class="modal-footer center-footer">
+        <button class="btn-sec" onclick="closeModal('modal-delete')">Cancelar</button>
+        <button class="btn-danger" id="confirm-delete-btn">Sim, Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL LIGHTBOX PARA EXPANDIR MÍDIA -->
+  <div id="modal-lightbox" class="modal-overlay" onclick="closeLightbox(event)">
+    <div class="lightbox-content" id="lightbox-content">
+      <!-- Mídia injetada por JS -->
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="toast-notification">Operação realizada com sucesso!</div>
+
+  <!-- SDKs DO FIREBASE FIRESTORE -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <!-- JS PRINCIPAL -->
+  <script src="script.js"></script>
+</body>
+</html>
